@@ -1,0 +1,22 @@
+
+“India_States_summary_covid19_death_clean”-dataset found on 'Harward Dataverse': https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/9QZGZB
+
+Data metadata for “India_States_summary_covid19_death_clean”
+Nr	Column_name  	
+D1	hasc	Source of the information
+D2	States	State name
+D3	date	Date of the information
+D4	deaths	Number of deaths
+
+
+“Mortality.monthly_Punjab.India_1916.1921”-dataset found on 'Harward Dataverse': https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/28995+
+
+Data metadata for “Mortality.monthly_Punjab.India_1916.1921”
+Nr	Column_name  	
+D1	Country	Name of country
+D2	Province	Name of province
+D3	District	Name of district
+D4	Date	Date of information
+D5	Mortality	Number of deaths
+D6	Cause	Name of cause
+D7	Source	Name of source of the information
