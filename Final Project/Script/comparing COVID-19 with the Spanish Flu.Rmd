@@ -1,0 +1,126 @@
+---
+title: "Comparison of COVID-19 and the Spanish Flu 1918"
+author: "Mette Emily Kendon"
+date: "08/01/2020"
+---
+
+#Downloading packages
+
+Packages used for the following project. The packages were loaded into RStudio by using the 'library'-function.
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(readxl)
+```
+
+
+Links to packages:
+- https://www.tidyverse.org
+- https://lubridate.tidyverse.org
+- https://readxl.tidyverse.org
+
+
+#Downloading data
+
+This project is based on two datasets found at 'Harvard Dataverse's' homepage. 
+
+The first dataset is a csv-file, why the 'read_csv'-function was used. The dataset was loaded into the dataframe named 'c19'.
+The second dataset is a xlsx-file, why the 'read_excel'-function was used. This dataset was loaded into the dataframe named 'spanish_flu'.
+
+The two datasets contain information about the number of deaths due to COVID-19 and the Spanish Flu in Punjab, India. 
+
+
+```{r}
+c19 <- read_csv("Data/India_States_summary_covid19_death.csv")
+spanish_flu <- read_excel("Data/Mortality.monthly_Punjab.India_1916.1921.xlsx", sheet = 2)
+```
+
+
+Links to datasets:
+- https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/28995+
+- https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/9QZGZB
+
+
+#Analysis
+
+The following codes are used to answer my research question. 
+This includes tidying of the 'c19' data frame and three diagrams based on the two data frames; 'c19' and 'spanish_flu'.
+
+
+#Cleaning the 'c19' data frame
+
+The 'c19'-data frame had to be cleaned, because every date formed its own column with its respective values.
+
+To clean the spreadsheet the two variables; ‘date’ and ‘deaths’ had to form their own two columns containing the values; date and number of deaths. 
+I started by extracting the columns 3-163, and placed them into the value ‘dates’. 
+Column 1 and 2 were not included, because they agreed to the criteria of tidy data. 
+
+
+```{r}
+dates <- colnames(c19)[3:163]
+```
+
+
+Subsequently, the ‘pivot_longer’-function was used, to make the data frame ‘longer’ by increasing the number of rows and decreasing the number of columns, and thereby creating two new columns called 'date' and deaths'. 
+The ‘filter’-function was used on the column named ‘States', because I was only interested in the numbers from Punjab. 
+Finally, the 'mutate'-function was used to modify the values in the column named 'date' in order for R to recognize them as dates (yyyy-mm-dd).
+
+
+```{r}
+c19 %>% 
+  pivot_longer(all_of(dates), names_to = "date", values_to = "deaths") %>% 
+  filter(States == "Punjab") %>% 
+  mutate(date = ymd(date)) -> c19
+```
+
+
+Links to functions used:
+- https://r4ds.had.co.nz/tidy-data.html#pivoting
+- https://r4ds.had.co.nz/dates-and-times.html#dates-and-times
+
+
+#Diagrams
+
+The 'ggplot'-function was used for the three diagrams. This function makes it easy to make plots based on data stored in a data frame. 
+The 'geom_point'-function was also used, which specifies that the plot should consist of scatterplots. 
+Aes is short for aesthetics, and is a function used to specify how the variables should be presented in the graph as x/y positions.
+
+
+The first diagram shows the daily amount of deaths from March to August 2020 due to COVID-19 in Punjab, India. 
+
+
+```{r}
+c19 %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = date, y = deaths))
+```
+
+
+The second diagram shows the number of deaths per month due to fever in the districts of Punjab, India in 1918.
+Compared to the first diagram, additionally two more functions were used to make this diagram. 
+This included the ‘mutate’-function, which was used to create a new column headed ‘year’ containing only the years from the column headed ‘Date'
+It also included the ‘filter’-function, which was used on the new column headed ‘year’ to develop a diagram showing the mortality rate from 1918. 
+
+
+```{r}
+spanish_flu %>% 
+  mutate(year = year(Date)) %>% 
+  filter(year == "1918") %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = Date, y = Mortality))
+```
+
+
+The third diagram shows the number of deaths per month due to fever in the districts of Punjab, India from 1916-1921, and provides an understanding of the course of the Spanish Flu-pandemic in Punjab.
+
+
+```{r}
+spanish_flu %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = Date, y = Mortality))
+```
+
+
+Link to function used:
+- https://datacarpentry.org/r-socialsci/04-ggplot2/index.html
