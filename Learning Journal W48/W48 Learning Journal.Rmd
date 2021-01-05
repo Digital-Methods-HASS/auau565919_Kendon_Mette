@@ -1,0 +1,60 @@
+---
+title: "W48:Scraping assignment"
+author: "Mette Kendon"
+date: "23/11/2020"
+---
+
+# Exercise 2.2
+Use the 'rvest' library to scrape data of your interest
+
+```{r libraries}
+library(rvest)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(janitor)
+library(tidyverse)
+```
+
+
+# Scraping the data 
+
+I used the first command to scrape the date from the Wikipedia website containing information about countries and their meat consumption. 
+The second command was used to extract the table from the website. 
+
+
+```{r}
+url <- "https://en.wikipedia.org/wiki/List_of_countries_by_meat_consumption"
+url_html <- read_html(url)
+```
+
+
+The next command was used to extract the HTML table through the 'table' tag and the command includes the 'html_nodes'-function and the 'html_table'-function. 
+
+
+```{r}
+whole_table <- url_html %>% 
+ html_nodes("table") %>%
+ html_table(fill = TRUE) 
+```
+
+The following command takes the downloaded html table, unlists it and and then combine the individual elements as columns.
+
+```{r htmltodf}
+new_table <- do.call(cbind,unlist(whole_table, recursive = FALSE)) 
+head(new_table) # ok, looks good, too bad it took 2 hours
+```
+
+The next command takes the object 'new_table' and converts it into a tibble. 
+
+```{r}
+new_table <- as_tibble(new_table)
+str(new_table)
+```
+
+The last command takes the object 'new_table' and saves it as a new object names 'data'. The 'write.csv'-function then saves the object named 'data' in my working directory (W48 Learning Journal) under the folder 'Data'.
+
+```{r}
+data <- new_table 
+write.csv(data,"data/populationcountry.csv")
+```
